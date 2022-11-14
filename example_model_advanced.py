@@ -132,11 +132,11 @@ if model_selection_loop:
             lambda d: d[list(pred_cols)].rank(pct=True))
         # do ensembles
         training_data["ensemble_neutral_riskiest_50"] = sum(
-            [training_data[pred_col] for pred_col in pred_cols if pred_col.endswith("neutral_riskiest_50")]).rank(
+            [training_data[pred_col].rank() for pred_col in pred_cols if pred_col.endswith("neutral_riskiest_50")]).rank(
             pct=True)
         training_data["ensemble_not_neutral"] = sum(
-            [training_data[pred_col] for pred_col in pred_cols if "neutral" not in pred_col]).rank(pct=True)
-        training_data["ensemble_all"] = sum([training_data[pred_col] for pred_col in pred_cols]).rank(pct=True)
+            [training_data[pred_col].rank() for pred_col in pred_cols if "neutral" not in pred_col]).rank(pct=True)
+        training_data["ensemble_all"] = sum([training_data[pred_col].rank() for pred_col in pred_cols]).rank(pct=True)
 
         ensemble_cols.add("ensemble_neutral_riskiest_50")
         ensemble_cols.add("ensemble_not_neutral")
