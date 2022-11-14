@@ -21,8 +21,8 @@ EXAMPLE_PREDS_COL = "example_preds"
 ERA_COL = "era"
 # params we'll use to train all of our models.
 # Ideal params would be more like 20000, 0.001, 6, 2**6, 0.1, but this is slow enough as it is
-model_params = {"n_estimators": 2000,
-                "learning_rate": 0.01,
+model_params = {"n_estimators": 200,
+                "learning_rate": 0.1,
                 "max_depth": 5,
                 "num_leaves": 2 ** 5,
                 "colsample_bytree": 0.1}
@@ -132,11 +132,11 @@ if model_selection_loop:
             lambda d: d[list(pred_cols)].rank(pct=True))
         # do ensembles
         training_data["ensemble_neutral_riskiest_50"] = sum(
-            [training_data[pred_col].rank() for pred_col in pred_cols if pred_col.endswith("neutral_riskiest_50")]).rank(
+            [training_data[[ERA_COL, pred_col]].groupby(ERA_COL).rank().values for pred_col in pred_cols if pred_col.endswith("neutral_riskiest_50")]).rank(
             pct=True)
         training_data["ensemble_not_neutral"] = sum(
-            [training_data[pred_col].rank() for pred_col in pred_cols if "neutral" not in pred_col]).rank(pct=True)
-        training_data["ensemble_all"] = sum([training_data[pred_col].rank() for pred_col in pred_cols]).rank(pct=True)
+            [training_data[[ERA_COL, pred_col]].groupby(ERA_COL).rank().values for pred_col in pred_cols if "neutral" not in pred_col]).rank(pct=True)
+        training_data["ensemble_all"] = sum([training_data[[ERA_COL, pred_col]].groupby(ERA_COL).rank().values for pred_col in pred_cols]).rank(pct=True)
 
         ensemble_cols.add("ensemble_neutral_riskiest_50")
         ensemble_cols.add("ensemble_not_neutral")
